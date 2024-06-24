@@ -35,6 +35,8 @@ property_id = "348181553"
 
 st.markdown("<h2><u>Form Submissions</u><h2>", unsafe_allow_html=True)
 
+placeholder = st.empty()
+
 # Date range input for the first date frame
 start_date_1 = st.sidebar.date_input("Start date of current month", pd.to_datetime("2024-01-01"))
 end_date_1 = st.sidebar.date_input("End date of current month", pd.to_datetime("today"))
@@ -159,8 +161,8 @@ df_new.index.rename(['Year','Month'],inplace=True)
 # result = df.drop_duplicates(subset='created').merge(cnt, left_on='created', right_index=True)
 # result
 # @title Conversions
-
-st.pyplot(df_new['Conversions'].plot(kind='line', figsize=(6, 4), title='Form submissions').figure, use_container_width=False)
+with placeholder.container():
+   st.pyplot(df_new['Conversions'].plot(kind='line', figsize=(6, 4), title='Form submissions').figure, use_container_width=False)
 
 #st.pyplot(plt.gca().spines[['top', 'right']].set_visible(False))
 
