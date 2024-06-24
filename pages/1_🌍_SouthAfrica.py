@@ -26,21 +26,23 @@ st.set_page_config(
 )
 
 # Set up Streamlit app title
-st.title("📈 SEO Data Dashboard")
+st.title("📈 Data Dashboard")
 st.divider()
 st.sidebar.header("Add your filters here👇")
 
 property_id = "346417629"
 
-st.markdown("<h2><u>Google Analytics 4 Data</u><h2>", unsafe_allow_html=True)
+st.markdown("<h2><u>Form Submissions</u><h2>", unsafe_allow_html=True)
 
 # Date range input for the first date frame
-start_date_1 = st.sidebar.date_input("Start date of current month", pd.to_datetime("2024-01-18"))
+start_date_1 = st.sidebar.date_input("Start date of current month", pd.to_datetime("2024-01-01"))
 end_date_1 = st.sidebar.date_input("End date of current month", pd.to_datetime("today"))
 
 # Date range input for the second date frame
-start_date_2 = st.sidebar.date_input("Start date of month to compare", pd.to_datetime("2024-01-18"))
-end_date_2 = st.sidebar.date_input("End date of month to compare", pd.to_datetime("today"))
+#start_date_2 = st.sidebar.date_input("Start date of month to compare", pd.to_datetime("2024-01-18"))
+#end_date_2 = st.sidebar.date_input("End date of month to compare", pd.to_datetime("today"))
+start_date_2 = pd.to_datetime("2023-01-01")
+end_date_2 =  pd.to_datetime("2023-12-01")
 
 # Run report request for the first date frame
 client = BetaAnalyticsDataClient()
@@ -139,7 +141,7 @@ res = df.groupby(df['created'].dt.month).value_counts()
 df_new = df.groupby([df['created'].dt.year, df['created'].dt.month]).aggregate("first")
 df_new = df_new.rename(columns={'created': 'Date', 'count': 'Conversions'})
 df_new.index.rename(['Year','Month'],inplace=True)
-st.write(df_new)
+#st.write(df_new)
 # count sum of state in each month
 #df.groupby(df.created.dt.month)['state'].sum()
 
@@ -190,8 +192,8 @@ st.pyplot(df_new['Conversions'].plot(kind='line', figsize=(6, 4), title='Form su
 
 
 # Display Combined DataFrame in Streamlit
-st.subheader("Month on Month Data")
-st.dataframe(df_combined)
+#st.subheader("Month on Month Data")
+#st.dataframe(df_combined)
 
 # Bar Chart for Active Users, New Users, and Engaged Sessions
 chart = alt.Chart(df_combined).mark_bar().encode(
@@ -205,8 +207,8 @@ chart = alt.Chart(df_combined).mark_bar().encode(
 )
 
 # Display the chart in Streamlit
-st.subheader("Active users MoM")
-st.altair_chart(chart, use_container_width=True)
+#st.subheader("Active users MoM")
+#st.altair_chart(chart, use_container_width=True)
 
 # Run report request for the top 10 landing pages
 request_landing_pages = RunReportRequest(
@@ -259,7 +261,7 @@ request_1 = RunReportRequest(
 )
 
 response_1 = client.run_report(request_1)
-
+#st.write(response_1)
 # Run report request for the second date frame
 request_2 = RunReportRequest(
     property=f"properties/{property_id}",
@@ -295,11 +297,11 @@ for row in response_2.rows:
 
 # Create a single DataFrame
 df_GSC_combined = pd.DataFrame(combined_GSC_data)
-st.subheader("Month on Month Data")
+# st.subheader("Month on Month Data")
 st.dataframe(df_GSC_combined)
 
 #GSC Charts
-st.subheader("Clicks Over Months")
+st.subheader("SEO Clicks Over Months")
 gsc_chart = alt.Chart(df_GSC_combined).mark_bar().encode(
     x='Month:N',
     y='Clicks:Q',  
@@ -311,17 +313,17 @@ gsc_chart = alt.Chart(df_GSC_combined).mark_bar().encode(
 
 st.altair_chart(gsc_chart, use_container_width=True)
 
-st.subheader("Impressions Over Months")
-gsc_chart = alt.Chart(df_GSC_combined).mark_bar().encode(
-    x='Month:N',
-    y='Impressions:Q',  
-    color='Month:N'
-).properties(
-    width=600,
-    height=400
-)
+# st.subheader("Impressions Over Months")
+# gsc_chart = alt.Chart(df_GSC_combined).mark_bar().encode(
+#     x='Month:N',
+#     y='Impressions:Q',  
+#     color='Month:N'
+# ).properties(
+#     width=600,
+#     height=400
+# )
 
-st.altair_chart(gsc_chart, use_container_width=True)
+# st.altair_chart(gsc_chart, use_container_width=True)
 
 
 # Set credentials and define the right GA4 property
@@ -504,7 +506,7 @@ df24_rev['Sum'] = df24_rev.sum(axis=1)
 df_reversed = df_reversed.astype(float)
 df_reversed['Sum'] = df_reversed.sum(axis=1)
 
-st.write(df24_rev)
+# st.write(df24_rev)
 #df_reversed
 # df24_rev.groupby(df24_rev['GA4_click_mail'].dt.year).sum()
 
@@ -600,7 +602,7 @@ fig, ax = plt.subplots()
 
 # # Initialize the bottom at zero for the first set of bars.
 bottom = np.zeros(len(df_reversed))
-st.write(df_reversed.columns)
+# st.write(df_reversed.columns)
 
 #---
 # cols = df1.columns.union(df2.columns)
