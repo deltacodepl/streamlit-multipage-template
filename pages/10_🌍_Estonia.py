@@ -30,14 +30,16 @@ st.set_page_config(
 st.title("📈 Data Dashboard")
 st.divider()
 st.sidebar.header("Add your filters here👇")
-FILENAME = 'lv.csv'
-property_id = "348177577"
+FILENAME = 'ee.csv'
+property_id = "348197938"
+
+placeholder = st.empty()
 
 st.markdown("<h2><u>Form Submissions</u><h2>", unsafe_allow_html=True)
 
 # Date range input for the first date frame
-start_date_1 = st.sidebar.date_input("Start date of current month", pd.to_datetime("2024-01-01"))
-end_date_1 = st.sidebar.date_input("End date of current month", pd.to_datetime("today"))
+start_date_1 = st.sidebar.date_input("Start date of current month", pd.to_datetime("2024-01-01"), disabled=True)
+end_date_1 = st.sidebar.date_input("End date of current month", pd.to_datetime("today"), disabled=True)
 
 # Date range input for the second date frame
 #start_date_2 = st.sidebar.date_input("Start date of month to compare", pd.to_datetime("2024-01-18"))
@@ -156,8 +158,8 @@ df_new.index.rename(['Year','Month'],inplace=True)
 # result = df.drop_duplicates(subset='created').merge(cnt, left_on='created', right_index=True)
 # result
 # @title Conversions
-
-st.pyplot(df_new['Conversions'].plot(kind='line', figsize=(6, 4), title='Form submissions').figure, use_container_width=False)
+with placeholder.container():
+  st.pyplot(df_new['Conversions'].plot(kind='line', figsize=(6, 4), title='Form submissions').figure, use_container_width=False)
 
 #st.pyplot(plt.gca().spines[['top', 'right']].set_visible(False))
 
@@ -337,7 +339,7 @@ st.altair_chart(gsc_chart, use_container_width=True)
 default_metrics=[Metric(name="conversions:GA4_click_mail"), Metric(name='conversions:GA4_copy_mail'), Metric(name='conversions:GA4_click_tel'),
              Metric(name="conversions:GA4_copy_tel"), Metric(name="conversions:contact_form")]
 estonia_metrics=[Metric(name="conversions:GA4_real_email"), Metric(name='conversions:GA4_real_copy_email'), Metric(name='conversions:GA4_real_call'),
-             Metric(name="conversions:GA4_real_copy_tel")]
+             Metric(name="conversions:GA4_real_copy_tel"), Metric(name='conversions:GA4_real_form')]
 za_metrics=[Metric(name="conversions:GA4_real_email"), Metric(name='conversions:GA4_real_copy_email'), Metric(name='conversions:GA4_real_call'),
              Metric(name="conversions:GA4_real_copy_tel")]
 
@@ -386,7 +388,7 @@ request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=estonia_metrics,
   date_ranges=[dranges[0]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
@@ -397,11 +399,12 @@ if response.row_count < 1:
 else:
    ga_data.append(response)
 
+
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=estonia_metrics,
   date_ranges=[dranges[1]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
@@ -417,7 +420,7 @@ request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=estonia_metrics,
   date_ranges=[dranges[2]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
@@ -433,7 +436,7 @@ request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=estonia_metrics,
   date_ranges=[dranges[3]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
@@ -450,7 +453,7 @@ else:
 #   property=f"properties/{property_id}",
 #   #dimensions=[Dimension(name="yearMonth")],
 #   dimensions=[], #Dimension(name='country')
-#   metrics=default_metrics,
+#   metrics=estonia_metrics,
 #   date_ranges=dranges[4:8],
 #   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
 #   keep_empty_rows=False,
@@ -463,71 +466,91 @@ request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=estonia_metrics,
   date_ranges=[dranges[4]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
   )
 
 response = client.run_report(request)
-ga_data.append(response)
+if response.row_count < 1:
+   month_start = month_start + 1
+else:
+   ga_data.append(response)
 
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=estonia_metrics,
   date_ranges=[dranges[5]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
   )
 
 response = client.run_report(request)
-ga_data.append(response)
+if response.row_count < 1:
+   month_start = month_start + 1
+else:
+   ga_data.append(response)
+   
 
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=estonia_metrics,
   date_ranges=[dranges[6]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
   )
 
 response = client.run_report(request)
-ga_data.append(response)
+if response.row_count < 1:
+   month_start = month_start + 1
+else:
+   ga_data.append(response)
+   
 
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=estonia_metrics,
   date_ranges=[dranges[7]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
   )
+
 response = client.run_report(request)
-ga_data.append(response)
+if response.row_count < 1:
+   month_start = month_start + 1
+else:
+   ga_data.append(response)
+   
 
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=estonia_metrics,
   date_ranges=[dranges[8]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
   )
 
 response = client.run_report(request)
-ga_data.append(response)
+if response.row_count < 1:
+   month_start = month_start + 1
+else:
+   ga_data.append(response)
+   
 
 # request = RunReportRequest(
 #   property=f"properties/{property_id}",
 #   #dimensions=[Dimension(name="yearMonth")],
 #   dimensions=[], #Dimension(name='country')
-#   metrics=default_metrics,
+#   metrics=estonia_metrics,
 #   date_ranges=dranges[8:],
 #   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
 #   keep_empty_rows=False,
@@ -540,42 +563,55 @@ request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=estonia_metrics,
   date_ranges=[dranges[9]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
   )
 
 response = client.run_report(request)
-ga_data.append(response)
+if response.row_count < 1:
+   month_start = month_start + 1
+else:
+   ga_data.append(response)
+   
+
+
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=estonia_metrics,
   date_ranges=[dranges[10]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
   )
 
 response = client.run_report(request)
-ga_data.append(response)
+if response.row_count < 1:
+   month_start = month_start + 1
+else:
+   ga_data.append(response)
+   
 
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=estonia_metrics,
   date_ranges=[dranges[11]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
   )
 
 response = client.run_report(request)
-ga_data.append(response)
+if response.row_count < 1:
+   month_start = month_start + 1
+else:
+   ga_data.append(response)
 # st.write(ga_data)
 
-
+#st.write(month_start)
 
 
 
@@ -584,7 +620,7 @@ month_start2 = 0
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
-  metrics=default_metrics,
+  metrics=estonia_metrics,
   date_ranges=[dranges2[0]],
   )
 response = client.run_report(request)
@@ -597,7 +633,7 @@ else:
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
-  metrics=default_metrics,
+  metrics=estonia_metrics,
   date_ranges=[dranges2[1]],
   )
 response = client.run_report(request)
@@ -610,7 +646,7 @@ else:
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
-  metrics=default_metrics,
+  metrics=estonia_metrics,
   date_ranges=[dranges2[2]],
   )
 response = client.run_report(request)
@@ -623,7 +659,7 @@ else:
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
-  metrics=default_metrics,
+  metrics=estonia_metrics,
   date_ranges=[dranges2[3]],
   )
 response = client.run_report(request)
@@ -636,7 +672,7 @@ else:
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
-  metrics=default_metrics,
+  metrics=estonia_metrics,
   date_ranges=[dranges2[4]],
   )
 response = client.run_report(request)
@@ -649,7 +685,7 @@ else:
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
-  metrics=default_metrics,
+  metrics=estonia_metrics,
   date_ranges=[dranges2[5]],
   )
 response = client.run_report(request)

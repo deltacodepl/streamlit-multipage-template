@@ -30,10 +30,12 @@ st.set_page_config(
 st.title("📈 Data Dashboard")
 st.divider()
 st.sidebar.header("Add your filters here👇")
-FILENAME = 'lv.csv'
-property_id = "348177577"
+FILENAME = 'in.csv'
+property_id = "348204815"
 
 st.markdown("<h2><u>Form Submissions</u><h2>", unsafe_allow_html=True)
+
+placeholder = st.empty()
 
 # Date range input for the first date frame
 start_date_1 = st.sidebar.date_input("Start date of current month", pd.to_datetime("2024-01-01"))
@@ -112,24 +114,25 @@ for row in response_2.rows:
 df_combined = pd.DataFrame(combined_data)
 
 # ---
-df = pd.read_csv(FILENAME)
+df_fs = pd.DataFrame()
+df_fs = pd.read_csv(FILENAME)
 
-df['created'] = pd.to_datetime(df['created'])
+df_fs['created'] = pd.to_datetime(df_fs['created'])
 #define how to aggregate various fields
 agg_functions = {'created': 'first'}
 
-df['count'] = df.groupby([df['created'].dt.year, df['created'].dt.month])['created'].transform('count')
+df_fs['count'] = df_fs.groupby([df_fs['created'].dt.year, df_fs['created'].dt.month])['created'].transform('count')
 
-df1 = df.groupby(df['created'].dt.month).size().reset_index(name='Conversions')
+df1 = df_fs.groupby(df_fs['created'].dt.month).size().reset_index(name='Conversions')
 
 #df['created'].dt.month.value_counts()
 # df['created'].dt.month
 
-res = df.groupby(df['created'].dt.month).size()
+res = df_fs.groupby(df_fs['created'].dt.month).size()
 #print(res)
-res = df.groupby(df['created'].dt.month)['created'].count()
+res = df_fs.groupby(df_fs['created'].dt.month)['created'].count()
 #print(res)
-res = df.groupby(df['created'].dt.month).value_counts()
+res = df_fs.groupby(df_fs['created'].dt.month).value_counts()
 #print(res)
 #df.groupby(df['created'].dt.month).agg({'count'})
 
@@ -139,9 +142,11 @@ res = df.groupby(df['created'].dt.month).value_counts()
 #                     'sales': [4, 1, 3, 2, 5, 3],})
 
 #create new DataFrame by combining rows with same id values as_index = True
-df_new = df.groupby([df['created'].dt.year, df['created'].dt.month]).aggregate("first")
+df_new = pd.DataFrame()
+df_new = df_fs.groupby([df_fs['created'].dt.year, df_fs['created'].dt.month]).aggregate("first")
 df_new = df_new.rename(columns={'created': 'Date', 'count': 'Conversions'})
 df_new.index.rename(['Year','Month'],inplace=True)
+
 #st.write(df_new)
 # count sum of state in each month
 #df.groupby(df.created.dt.month)['state'].sum()
@@ -156,8 +161,8 @@ df_new.index.rename(['Year','Month'],inplace=True)
 # result = df.drop_duplicates(subset='created').merge(cnt, left_on='created', right_index=True)
 # result
 # @title Conversions
-
-st.pyplot(df_new['Conversions'].plot(kind='line', figsize=(6, 4), title='Form submissions').figure, use_container_width=False)
+with placeholder.container():
+   st.pyplot(df_new['Conversions'].plot(kind='line', figsize=(6, 4), title='Form submissions').figure, use_container_width=False)
 
 #st.pyplot(plt.gca().spines[['top', 'right']].set_visible(False))
 

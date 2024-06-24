@@ -30,10 +30,12 @@ st.set_page_config(
 st.title("📈 Data Dashboard")
 st.divider()
 st.sidebar.header("Add your filters here👇")
-FILENAME = 'ee.csv'
-property_id = "348181553"
+FILENAME = 'nz.csv'
+property_id = "359296335"
 
 st.markdown("<h2><u>Form Submissions</u><h2>", unsafe_allow_html=True)
+
+placeholder = st.empty()
 
 # Date range input for the first date frame
 start_date_1 = st.sidebar.date_input("Start date of current month", pd.to_datetime("2024-01-01"))
@@ -112,24 +114,25 @@ for row in response_2.rows:
 df_combined = pd.DataFrame(combined_data)
 
 # ---
-df = pd.read_csv(FILENAME)
+df_fs = pd.DataFrame()
+df_fs = pd.read_csv(FILENAME)
 
-df['created'] = pd.to_datetime(df['created'])
+df_fs['created'] = pd.to_datetime(df_fs['created'])
 #define how to aggregate various fields
 agg_functions = {'created': 'first'}
 
-df['count'] = df.groupby([df['created'].dt.year, df['created'].dt.month])['created'].transform('count')
+df_fs['count'] = df_fs.groupby([df_fs['created'].dt.year, df_fs['created'].dt.month])['created'].transform('count')
 
-df1 = df.groupby(df['created'].dt.month).size().reset_index(name='Conversions')
+df1 = df_fs.groupby(df_fs['created'].dt.month).size().reset_index(name='Conversions')
 
 #df['created'].dt.month.value_counts()
 # df['created'].dt.month
 
-res = df.groupby(df['created'].dt.month).size()
+res = df_fs.groupby(df_fs['created'].dt.month).size()
 #print(res)
-res = df.groupby(df['created'].dt.month)['created'].count()
+res = df_fs.groupby(df_fs['created'].dt.month)['created'].count()
 #print(res)
-res = df.groupby(df['created'].dt.month).value_counts()
+res = df_fs.groupby(df_fs['created'].dt.month).value_counts()
 #print(res)
 #df.groupby(df['created'].dt.month).agg({'count'})
 
@@ -139,9 +142,11 @@ res = df.groupby(df['created'].dt.month).value_counts()
 #                     'sales': [4, 1, 3, 2, 5, 3],})
 
 #create new DataFrame by combining rows with same id values as_index = True
-df_new = df.groupby([df['created'].dt.year, df['created'].dt.month]).aggregate("first")
+df_new = pd.DataFrame()
+df_new = df_fs.groupby([df_fs['created'].dt.year, df_fs['created'].dt.month]).aggregate("first")
 df_new = df_new.rename(columns={'created': 'Date', 'count': 'Conversions'})
 df_new.index.rename(['Year','Month'],inplace=True)
+
 #st.write(df_new)
 # count sum of state in each month
 #df.groupby(df.created.dt.month)['state'].sum()
@@ -156,8 +161,8 @@ df_new.index.rename(['Year','Month'],inplace=True)
 # result = df.drop_duplicates(subset='created').merge(cnt, left_on='created', right_index=True)
 # result
 # @title Conversions
-
-st.pyplot(df_new['Conversions'].plot(kind='line', figsize=(6, 4), title='Form submissions').figure, use_container_width=False)
+with placeholder.container():
+   st.pyplot(df_new['Conversions'].plot(kind='line', figsize=(6, 4), title='Form submissions').figure, use_container_width=False)
 
 #st.pyplot(plt.gca().spines[['top', 'right']].set_visible(False))
 
@@ -338,8 +343,10 @@ default_metrics=[Metric(name="conversions:GA4_click_mail"), Metric(name='convers
              Metric(name="conversions:GA4_copy_tel"), Metric(name="conversions:contact_form")]
 estonia_metrics=[Metric(name="conversions:GA4_real_email"), Metric(name='conversions:GA4_real_copy_email'), Metric(name='conversions:GA4_real_call'),
              Metric(name="conversions:GA4_real_copy_tel")]
-za_metrics=[Metric(name="conversions:GA4_real_email"), Metric(name='conversions:GA4_real_copy_email'), Metric(name='conversions:GA4_real_call'),
-             Metric(name="conversions:GA4_real_copy_tel")]
+za_metrics=[Metric(name="keyEvents:GA4_real_email"), Metric(name='keyEvents:GA4_real_copy_email'), Metric(name='keyEvents:GA4_real_call'),
+             Metric(name="keyEvents:GA4_real_copy_tel")]
+nz_metrics=[Metric(name="keyEvents:GA4_click_mail"), Metric(name='keyEvents:GA4_copy_mail'), Metric(name='keyEvents:click_to_call'),
+             Metric(name="keyEvents:GA4_copy_tel"), Metric(name="keyEvents:contact_form")]
 
 country = 'PL (Poland)'
 # Get the data from the API
@@ -386,7 +393,7 @@ request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=nz_metrics,
   date_ranges=[dranges[0]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
@@ -401,7 +408,7 @@ request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=nz_metrics,
   date_ranges=[dranges[1]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
@@ -417,7 +424,7 @@ request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=nz_metrics,
   date_ranges=[dranges[2]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
@@ -433,7 +440,7 @@ request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=nz_metrics,
   date_ranges=[dranges[3]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
@@ -463,7 +470,7 @@ request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=nz_metrics,
   date_ranges=[dranges[4]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
@@ -476,7 +483,7 @@ request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=nz_metrics,
   date_ranges=[dranges[5]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
@@ -489,7 +496,7 @@ request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=nz_metrics,
   date_ranges=[dranges[6]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
@@ -502,7 +509,7 @@ request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=nz_metrics,
   date_ranges=[dranges[7]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
@@ -514,7 +521,7 @@ request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=nz_metrics,
   date_ranges=[dranges[8]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
@@ -540,7 +547,7 @@ request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=nz_metrics,
   date_ranges=[dranges[9]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
@@ -552,7 +559,7 @@ request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=nz_metrics,
   date_ranges=[dranges[10]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
@@ -565,7 +572,7 @@ request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
   #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
+  metrics=nz_metrics,
   date_ranges=[dranges[11]],
   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
   keep_empty_rows=False,
@@ -584,7 +591,7 @@ month_start2 = 0
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
-  metrics=default_metrics,
+  metrics=nz_metrics,
   date_ranges=[dranges2[0]],
   )
 response = client.run_report(request)
@@ -597,7 +604,7 @@ else:
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
-  metrics=default_metrics,
+  metrics=nz_metrics,
   date_ranges=[dranges2[1]],
   )
 response = client.run_report(request)
@@ -610,7 +617,7 @@ else:
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
-  metrics=default_metrics,
+  metrics=nz_metrics,
   date_ranges=[dranges2[2]],
   )
 response = client.run_report(request)
@@ -623,7 +630,7 @@ else:
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
-  metrics=default_metrics,
+  metrics=nz_metrics,
   date_ranges=[dranges2[3]],
   )
 response = client.run_report(request)
@@ -636,7 +643,7 @@ else:
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
-  metrics=default_metrics,
+  metrics=nz_metrics,
   date_ranges=[dranges2[4]],
   )
 response = client.run_report(request)
@@ -649,7 +656,7 @@ else:
 request = RunReportRequest(
   property=f"properties/{property_id}",
   dimensions=[Dimension(name="yearMonth")],
-  metrics=default_metrics,
+  metrics=nz_metrics,
   date_ranges=[dranges2[5]],
   )
 response = client.run_report(request)

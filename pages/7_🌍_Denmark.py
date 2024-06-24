@@ -30,8 +30,8 @@ st.set_page_config(
 st.title("📈 Data Dashboard")
 st.divider()
 st.sidebar.header("Add your filters here👇")
-FILENAME = 'kz.csv'
-property_id = "348181553"
+FILENAME = 'dk.csv'
+property_id = "348212867"
 
 st.markdown("<h2><u>Form Submissions</u><h2>", unsafe_allow_html=True)
 
