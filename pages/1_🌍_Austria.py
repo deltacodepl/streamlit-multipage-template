@@ -5,7 +5,6 @@ import altair as alt
 from matplotlib import pyplot as plt
 import numpy as np
 import time
-import time 
 
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "service_account.json"
@@ -49,7 +48,7 @@ start_date_2 = pd.to_datetime("2023-01-01")
 end_date_2 =  pd.to_datetime("2023-12-01")
 
 placeholder = st.container()
-placeholder.empty()
+# placeholder.empty()
 # ---
 df_fs = None
 df_fs = pd.read_csv(FILENAME)
@@ -101,6 +100,25 @@ df_new.index.rename(['Year','Month'],inplace=True)
 time.sleep(1)
 with placeholder.container():
    st.pyplot(df_new['Conversions'].plot(kind='line', figsize=(6, 4), title='Form submissions').figure, use_container_width=False)
+placeholder.empty()
+
+#st.write(df_new['Conversions'])
+
+#st.write(df_new.reset_index())
+#df_new['Conversions'] = pd.to_datetime(dict(year=df_new.Year, month=df_new.Month))
+# st.write(pd.to_datetime(df_new[pd.Index['Year', 'Month']]))
+         
+# df = pd.DataFrame(data)
+
+
+# chart = alt.Chart(df_new['Conversions']).mark_line().encode(
+#     x=alt.X('Date Range:N', title='Date Range'),
+#     y=alt.Y('Active Users:Q', title='Count'),
+# )
+# st.altair_chart(chart, theme="streamlit", use_container_width=True)
+
+# st.write(df_new['Conversions'], )
+# st.line_chart(df_new['Conversions'])
 
 #st.pyplot(plt.gca().spines[['top', 'right']].set_visible(False))
 
@@ -301,13 +319,13 @@ for row in response_1.rows:
         'CTR': row.metric_values[2].value
     })
 
-for row in response_2.rows:
-    combined_GSC_data.append({
-        'Month': row.dimension_values[0].value,
-        'Clicks': row.metric_values[0].value,
-        'Impressions': row.metric_values[1].value,
-        'CTR': row.metric_values[2].value
-    })
+# for row in response_2.rows:
+#     combined_GSC_data.append({
+#         'Month': row.dimension_values[0].value,
+#         'Clicks': row.metric_values[0].value,
+#         'Impressions': row.metric_values[1].value,
+#         'CTR': row.metric_values[2].value
+#     })
 
 # Create a single DataFrame
 df_GSC_combined = pd.DataFrame(combined_GSC_data)

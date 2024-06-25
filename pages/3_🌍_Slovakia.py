@@ -39,7 +39,7 @@ property_id = "346431384"
 
 
 # Date range input for the first date frame
-start_date_1 = st.sidebar.date_input("Start date of current month", pd.to_datetime("2024-01-01"), disabled=True)
+start_date_1 = st.sidebar.date_input("Start date of current month", pd.to_datetime("2023-01-01"), disabled=True)
 end_date_1 = st.sidebar.date_input("End date of current month", pd.to_datetime("today"), disabled=True)
 
 # Date range input for the second date frame
@@ -47,6 +47,7 @@ end_date_1 = st.sidebar.date_input("End date of current month", pd.to_datetime("
 #end_date_2 = st.sidebar.date_input("End date of month to compare", pd.to_datetime("today"))
 start_date_2 = pd.to_datetime("2023-01-01")
 end_date_2 =  pd.to_datetime("2023-12-01")
+
 placeholder = st.container()
 placeholder.empty()
 # ---
@@ -98,7 +99,7 @@ df_new.index.rename(['Year','Month'],inplace=True)
 time.sleep(1)
 with placeholder:
   st.pyplot(df_new['Conversions'].plot(kind='line', figsize=(6, 4), title='Form submissions').figure, use_container_width=False)
-
+placeholder.empty()
 #st.pyplot(plt.gca().spines[['top', 'right']].set_visible(False))
 
 # ---
@@ -297,13 +298,13 @@ for row in response_1.rows:
         'CTR': row.metric_values[2].value
     })
 
-for row in response_2.rows:
-    combined_GSC_data.append({
-        'Month': row.dimension_values[0].value,
-        'Clicks': row.metric_values[0].value,
-        'Impressions': row.metric_values[1].value,
-        'CTR': row.metric_values[2].value
-    })
+# for row in response_2.rows:
+#     combined_GSC_data.append({
+#         'Month': row.dimension_values[0].value,
+#         'Clicks': row.metric_values[0].value,
+#         'Impressions': row.metric_values[1].value,
+#         'CTR': row.metric_values[2].value
+#     })
 
 # Create a single DataFrame
 df_GSC_combined = pd.DataFrame(combined_GSC_data)
