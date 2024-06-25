@@ -4,6 +4,8 @@ import streamlit as st
 import altair as alt
 from matplotlib import pyplot as plt
 import numpy as np
+import time
+import time 
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "service_account.json"
 
@@ -29,15 +31,15 @@ st.set_page_config(
 # Set up Streamlit app title
 st.title("📈 Data Dashboard")
 st.divider()
-st.sidebar.header("Add your filters here👇")
-
+st.sidebar.header("SEO report date range👇")
+FILENAME = 'pl.csv'
 property_id = "348221890"
 
 st.markdown("<h2><u>Form Submissions</u><h2>", unsafe_allow_html=True)
 
 # Date range input for the first date frame
-start_date_1 = st.sidebar.date_input("Start date of current month", pd.to_datetime("2024-01-01"))
-end_date_1 = st.sidebar.date_input("End date of current month", pd.to_datetime("today"))
+start_date_1 = st.sidebar.date_input("Start date of current month", pd.to_datetime("2023-01-01"), disabled=True)
+end_date_1 = st.sidebar.date_input("End date of current month", pd.to_datetime("today"), disabled=True)
 
 # Date range input for the second date frame
 #start_date_2 = st.sidebar.date_input("Start date of month to compare", pd.to_datetime("2024-01-18"))
@@ -45,6 +47,63 @@ end_date_1 = st.sidebar.date_input("End date of current month", pd.to_datetime("
 start_date_2 = pd.to_datetime("2023-01-01")
 end_date_2 =  pd.to_datetime("2023-12-01")
 
+
+placeholder = st.container()
+placeholder.empty()
+
+# ---
+df = None
+df = pd.read_csv(FILENAME)
+
+df['created'] = pd.to_datetime(df['created'])
+#define how to aggregate various fields
+agg_functions = {'created': 'first'}
+
+df['count'] = df.groupby([df['created'].dt.year, df['created'].dt.month])['created'].transform('count')
+
+df1 = df.groupby(df['created'].dt.month).size().reset_index(name='Conversions')
+
+#df['created'].dt.month.value_counts()
+# df['created'].dt.month
+
+res = df.groupby(df['created'].dt.month).size()
+#print(res)
+res = df.groupby(df['created'].dt.month)['created'].count()
+#print(res)
+res = df.groupby(df['created'].dt.month).value_counts()
+#print(res)
+#df.groupby(df['created'].dt.month).agg({'count'})
+
+
+# df = pd.DataFrame({'employee_id': [1, 1, 2, 3, 3, 3],
+#                     'employee_name': ['Carlos', 'Carlos', 'Dan', 'Samuel', 'Samuel', 'Samuel'],
+#                     'sales': [4, 1, 3, 2, 5, 3],})
+
+#create new DataFrame by combining rows with same id values as_index = True
+df_new = df.groupby([df['created'].dt.year, df['created'].dt.month]).aggregate("first")
+df_new = df_new.rename(columns={'created': 'Date', 'count': 'Conversions'})
+df_new.index.rename(['Year','Month'],inplace=True)
+#st.write(df_new)
+# count sum of state in each month
+#df.groupby(df.created.dt.month)['state'].sum()
+
+#ct = df.groupby('created').size().values
+
+#df
+# df = df.drop_duplicates(subset="created").assign(Count=ct)
+
+# cnt = df.groupby(pd.Grouper(key='created', axis=0, freq='M')).size().rename('Count')
+
+# result = df.drop_duplicates(subset='created').merge(cnt, left_on='created', right_index=True)
+# result
+# @title Conversions
+time.sleep(1)
+with placeholder:
+  st.pyplot(df_new['Conversions'].plot(kind='line', figsize=(6, 4), title='Form submissions').figure, use_container_width=False)
+
+#st.pyplot(plt.gca().spines[['top', 'right']].set_visible(False))
+
+# ---
 # Run report request for the first date frame
 client = BetaAnalyticsDataClient()
 request_1 = RunReportRequest(
@@ -111,57 +170,7 @@ for row in response_2.rows:
 # Create a single DataFrame
 df_combined = pd.DataFrame(combined_data)
 
-# ---
-df = pd.read_csv('pl.csv')
 
-df['created'] = pd.to_datetime(df['created'])
-#define how to aggregate various fields
-agg_functions = {'created': 'first'}
-
-df['count'] = df.groupby([df['created'].dt.year, df['created'].dt.month])['created'].transform('count')
-
-df1 = df.groupby(df['created'].dt.month).size().reset_index(name='Conversions')
-
-#df['created'].dt.month.value_counts()
-# df['created'].dt.month
-
-res = df.groupby(df['created'].dt.month).size()
-#print(res)
-res = df.groupby(df['created'].dt.month)['created'].count()
-#print(res)
-res = df.groupby(df['created'].dt.month).value_counts()
-#print(res)
-#df.groupby(df['created'].dt.month).agg({'count'})
-
-
-# df = pd.DataFrame({'employee_id': [1, 1, 2, 3, 3, 3],
-#                     'employee_name': ['Carlos', 'Carlos', 'Dan', 'Samuel', 'Samuel', 'Samuel'],
-#                     'sales': [4, 1, 3, 2, 5, 3],})
-
-#create new DataFrame by combining rows with same id values as_index = True
-df_new = df.groupby([df['created'].dt.year, df['created'].dt.month]).aggregate("first")
-df_new = df_new.rename(columns={'created': 'Date', 'count': 'Conversions'})
-df_new.index.rename(['Year','Month'],inplace=True)
-#st.write(df_new)
-# count sum of state in each month
-#df.groupby(df.created.dt.month)['state'].sum()
-
-#ct = df.groupby('created').size().values
-
-#df
-# df = df.drop_duplicates(subset="created").assign(Count=ct)
-
-# cnt = df.groupby(pd.Grouper(key='created', axis=0, freq='M')).size().rename('Count')
-
-# result = df.drop_duplicates(subset='created').merge(cnt, left_on='created', right_index=True)
-# result
-# @title Conversions
-
-st.pyplot(df_new['Conversions'].plot(kind='line', figsize=(6, 4), title='Form submissions').figure, use_container_width=False)
-
-#st.pyplot(plt.gca().spines[['top', 'right']].set_visible(False))
-
-# ---
 
 # st.title("Simulation[tm]")
 # st.write("Here is our super important simulation")

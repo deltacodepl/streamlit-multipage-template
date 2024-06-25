@@ -32,7 +32,7 @@ st.title("Tapflo Web Analytics Dashboard")
 
 # """
 
-st.markdown(markdown)
+# st.markdown(markdown)
 
 m = leafmap.Map(minimap_control=True)
 m.add_basemap("OpenTopoMap")
