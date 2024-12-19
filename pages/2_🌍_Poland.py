@@ -359,7 +359,7 @@ from dateutil import rrule, parser
 date1 = '2023-01-01'
 date2 = '2023-12-31'
 date3 = '2024-01-01'
-date4 = '2024-06-12' #datetime.now().date().strftime
+date4 = '2024-12-31' #datetime.now().date().strftime
 
 #list(rrule.rrule(rrule.MONTHLY,count=10,dtstart=parser.parse(date1)))
 
@@ -383,6 +383,8 @@ for m in datesy:
 # Get the data from the API
 
 dranges2 = [DateRange(start_date=m[0].strftime('%Y-%m-%d'), end_date=m[1].strftime('%Y-%m-%d')) for m in drange2 ]
+
+# st.write(dranges2)
 
 ga_data = []
 ga_data2 = []
@@ -668,6 +670,87 @@ if response.row_count < 1:
 else:
    ga_data2.append(response)
 
+request = RunReportRequest(
+  property=f"properties/{property_id}",
+  dimensions=[Dimension(name="yearMonth")],
+  metrics=default_metrics,
+  date_ranges=[dranges2[6]],
+  )
+response = client.run_report(request)
+# print(response)
+if response.row_count < 1:
+   month_start2 = month_start2 + 1
+else:
+   ga_data2.append(response)
+
+
+request = RunReportRequest(
+  property=f"properties/{property_id}",
+  dimensions=[Dimension(name="yearMonth")],
+  metrics=default_metrics,
+  date_ranges=[dranges2[7]],
+  )
+response = client.run_report(request)
+# print(response)
+if response.row_count < 1:
+   month_start2 = month_start2 + 1
+else:
+   ga_data2.append(response)
+
+request = RunReportRequest(
+  property=f"properties/{property_id}",
+  dimensions=[Dimension(name="yearMonth")],
+  metrics=default_metrics,
+  date_ranges=[dranges2[8]],
+  )
+response = client.run_report(request)
+# print(response)
+if response.row_count < 1:
+   month_start2 = month_start2 + 1
+else:
+   ga_data2.append(response)
+   
+   
+request = RunReportRequest(
+  property=f"properties/{property_id}",
+  dimensions=[Dimension(name="yearMonth")],
+  metrics=default_metrics,
+  date_ranges=[dranges2[9]],
+  )
+response = client.run_report(request)
+# print(response)
+if response.row_count < 1:
+   month_start2 = month_start2 + 1
+else:
+   ga_data2.append(response)
+
+request = RunReportRequest(
+  property=f"properties/{property_id}",
+  dimensions=[Dimension(name="yearMonth")],
+  metrics=default_metrics,
+  date_ranges=[dranges2[10]],
+  )
+response = client.run_report(request)
+# print(response)
+if response.row_count < 1:
+   month_start2 = month_start2 + 1
+else:
+   ga_data2.append(response)
+
+request = RunReportRequest(
+  property=f"properties/{property_id}",
+  dimensions=[Dimension(name="yearMonth")],
+  metrics=default_metrics,
+  date_ranges=[dranges2[11]],
+  )
+response = client.run_report(request)
+# print(response)
+if response.row_count < 1:
+   month_start2 = month_start2 + 1
+else:
+   ga_data2.append(response)
+
+
 # st.write(ga_data2)
 # Turn the raw data into a Table
 
@@ -737,10 +820,10 @@ df24_rev.reset_index(drop=True, inplace=True)
 # st.write(df_reversed)
 # st.write(df24_rev)
 
-
+# TO DO update months
 ct = pd.CategoricalIndex(months_list[month_start:13], ordered=True, name='Month')
 df_reversed.set_index(ct,drop=True, inplace=True)
-ct = pd.CategoricalIndex(months_list[0:6], ordered=True, name='Month')
+ct = pd.CategoricalIndex(months_list[0:13], ordered=True, name='Month')
 df24_rev.set_index(ct,drop=True, inplace=True)
 # del df_reversed['dateRange']
 #ct
@@ -889,8 +972,11 @@ bottom = np.zeros(len(df24_rev))
 #  df24_rev.
 # Plot each layer of the bar, adding each bar to the "bottom" so
 # the next bar starts higher.
+
+# TO DO 
+# 
 for i, col in enumerate(df24_rev.columns[:-1]):
-  ax.bar(months_list[months_list.index(df24_rev.first_valid_index()):6], df24_rev[col].to_numpy(dtype='int'), bottom=bottom, label=col)
+  ax.bar(months_list[months_list.index(df24_rev.first_valid_index()):13], df24_rev[col].to_numpy(dtype='int'), bottom=bottom, label=col)
   bottom += df24_rev[col].to_numpy(dtype='int')
 
 ax.set_title('Conversions 2024')
