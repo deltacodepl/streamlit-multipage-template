@@ -5,7 +5,6 @@ st.set_page_config(layout="wide")
 
 # Customize the sidebar
 markdown = """
-
 """
 
 st.sidebar.title("")
@@ -31,7 +30,6 @@ st.title("Tapflo Web Analytics Dashboard")
 # 4. Add a new app to the `pages/` directory with an emoji in the file name, e.g., `1_🚀_Chart.py`.
 
 # """
-
 # st.markdown(markdown)
 
 m = leafmap.Map(minimap_control=True)
