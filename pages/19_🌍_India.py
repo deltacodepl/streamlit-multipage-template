@@ -36,9 +36,9 @@ property_id = "348204815"
 
 st.markdown("<h2><u>Form Submissions</u><h2>", unsafe_allow_html=True)
 
-
+# SEO chart
 # Date range input for the first date frame
-start_date_1 = st.sidebar.date_input("Start date of current month", pd.to_datetime("2023-01-01"), disabled=True)
+start_date_1 = st.sidebar.date_input("Start date of current month", pd.to_datetime("2024-01-01"), disabled=True)
 end_date_1 = st.sidebar.date_input("End date of current month", pd.to_datetime("today"), disabled=True)
 
 # Date range input for the second date frame
@@ -201,8 +201,6 @@ df_combined = pd.DataFrame(combined_data)
 
 # st.pyplot(fig)
 
-
-
 # Display Combined DataFrame in Streamlit
 #st.subheader("Month on Month Data")
 #st.dataframe(df_combined)
@@ -275,18 +273,18 @@ request_1 = RunReportRequest(
 response_1 = client.run_report(request_1)
 
 # Run report request for the second date frame
-request_2 = RunReportRequest(
-    property=f"properties/{property_id}",
-    dimensions=[Dimension(name="yearMonth")],
-    metrics=[
-        Metric(name="organicGoogleSearchClicks"),
-        Metric(name="organicGoogleSearchImpressions"),
-        Metric(name="organicGoogleSearchClickThroughRate"),
-    ],
-    date_ranges=[DateRange(start_date=start_date_2.strftime("%Y-%m-%d"), end_date=end_date_2.strftime("%Y-%m-%d"))],
-)
+# request_2 = RunReportRequest(
+#     property=f"properties/{property_id}",
+#     dimensions=[Dimension(name="yearMonth")],
+#     metrics=[
+#         Metric(name="organicGoogleSearchClicks"),
+#         Metric(name="organicGoogleSearchImpressions"),
+#         Metric(name="organicGoogleSearchClickThroughRate"),
+#     ],
+#     date_ranges=[DateRange(start_date=start_date_2.strftime("%Y-%m-%d"), end_date=end_date_2.strftime("%Y-%m-%d"))],
+# )
 
-response_2 = client.run_report(request_2)
+# response_2 = client.run_report(request_2)
 
 # st.write(response_1)
 # st.write(response_2)
@@ -352,14 +350,14 @@ estonia_metrics=[Metric(name="conversions:GA4_real_email"), Metric(name='convers
 za_metrics=[Metric(name="conversions:GA4_real_email"), Metric(name='conversions:GA4_real_copy_email'), Metric(name='conversions:GA4_real_call'),
              Metric(name="conversions:GA4_real_copy_tel")]
 
-country = 'PL (Poland)'
+# country = 'IN (India)'
 # Get the data from the API
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-
+# Google ADS
 from dateutil import rrule, parser
-date1 = '2023-01-01'
-date2 = '2023-12-31'
+date1 = '2025-01-01'
+date2 = '2025-02-24'
 date3 = '2024-01-01'
 date4 = '2024-12-31' #datetime.now().date().strftime
 
@@ -424,39 +422,39 @@ if response.row_count < 1:
 else:
    ga_data.append(response)
 
-request = RunReportRequest(
-  property=f"properties/{property_id}",
-  dimensions=[Dimension(name="yearMonth")],
-  #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
-  date_ranges=[dranges[2]],
-  #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
-  keep_empty_rows=False,
-  )
+# request = RunReportRequest(
+#   property=f"properties/{property_id}",
+#   dimensions=[Dimension(name="yearMonth")],
+#   #dimensions=[], #Dimension(name='country')
+#   metrics=default_metrics,
+#   date_ranges=[dranges[2]],
+#   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
+#   keep_empty_rows=False,
+#   )
 
-response = client.run_report(request)
-if response.row_count < 1:
-   month_start = month_start + 1
-else:
-   ga_data.append(response)
+# response = client.run_report(request)
+# if response.row_count < 1:
+#    month_start = month_start + 1
+# else:
+#    ga_data.append(response)
 
-request = RunReportRequest(
-  property=f"properties/{property_id}",
-  dimensions=[Dimension(name="yearMonth")],
-  #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
-  date_ranges=[dranges[3]],
-  #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
-  keep_empty_rows=False,
-  )
+# request = RunReportRequest(
+#   property=f"properties/{property_id}",
+#   dimensions=[Dimension(name="yearMonth")],
+#   #dimensions=[], #Dimension(name='country')
+#   metrics=default_metrics,
+#   date_ranges=[dranges[3]],
+#   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
+#   keep_empty_rows=False,
+#   )
 
-response = client.run_report(request)
-if response.row_count < 1:
-   month_start = month_start + 1
-else:
-   ga_data.append(response)
+# response = client.run_report(request)
+# if response.row_count < 1:
+#    month_start = month_start + 1
+# else:
+#    ga_data.append(response)
 
-
+# ----
 # request = RunReportRequest(
 #   property=f"properties/{property_id}",
 #   #dimensions=[Dimension(name="yearMonth")],
@@ -469,71 +467,73 @@ else:
 # response = client.run_report(request)
 # # print(response)
 # ga_data.append(response)
+# ----
 
-request = RunReportRequest(
-  property=f"properties/{property_id}",
-  dimensions=[Dimension(name="yearMonth")],
-  #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
-  date_ranges=[dranges[4]],
-  #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
-  keep_empty_rows=False,
-  )
+# request = RunReportRequest(
+#   property=f"properties/{property_id}",
+#   dimensions=[Dimension(name="yearMonth")],
+#   #dimensions=[], #Dimension(name='country')
+#   metrics=default_metrics,
+#   date_ranges=[dranges[4]],
+#   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
+#   keep_empty_rows=False,
+#   )
 
-response = client.run_report(request)
-ga_data.append(response)
+# response = client.run_report(request)
+# ga_data.append(response)
 
-request = RunReportRequest(
-  property=f"properties/{property_id}",
-  dimensions=[Dimension(name="yearMonth")],
-  #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
-  date_ranges=[dranges[5]],
-  #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
-  keep_empty_rows=False,
-  )
+# request = RunReportRequest(
+#   property=f"properties/{property_id}",
+#   dimensions=[Dimension(name="yearMonth")],
+#   #dimensions=[], #Dimension(name='country')
+#   metrics=default_metrics,
+#   date_ranges=[dranges[5]],
+#   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
+#   keep_empty_rows=False,
+#   )
 
-response = client.run_report(request)
-ga_data.append(response)
+# response = client.run_report(request)
+# ga_data.append(response)
 
-request = RunReportRequest(
-  property=f"properties/{property_id}",
-  dimensions=[Dimension(name="yearMonth")],
-  #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
-  date_ranges=[dranges[6]],
-  #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
-  keep_empty_rows=False,
-  )
+# request = RunReportRequest(
+#   property=f"properties/{property_id}",
+#   dimensions=[Dimension(name="yearMonth")],
+#   #dimensions=[], #Dimension(name='country')
+#   metrics=default_metrics,
+#   date_ranges=[dranges[6]],
+#   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
+#   keep_empty_rows=False,
+#   )
 
-response = client.run_report(request)
-ga_data.append(response)
+# response = client.run_report(request)
+# ga_data.append(response)
 
-request = RunReportRequest(
-  property=f"properties/{property_id}",
-  dimensions=[Dimension(name="yearMonth")],
-  #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
-  date_ranges=[dranges[7]],
-  #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
-  keep_empty_rows=False,
-  )
-response = client.run_report(request)
-ga_data.append(response)
+# request = RunReportRequest(
+#   property=f"properties/{property_id}",
+#   dimensions=[Dimension(name="yearMonth")],
+#   #dimensions=[], #Dimension(name='country')
+#   metrics=default_metrics,
+#   date_ranges=[dranges[7]],
+#   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
+#   keep_empty_rows=False,
+#   )
+# response = client.run_report(request)
+# ga_data.append(response)
 
-request = RunReportRequest(
-  property=f"properties/{property_id}",
-  dimensions=[Dimension(name="yearMonth")],
-  #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
-  date_ranges=[dranges[8]],
-  #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
-  keep_empty_rows=False,
-  )
+# request = RunReportRequest(
+#   property=f"properties/{property_id}",
+#   dimensions=[Dimension(name="yearMonth")],
+#   #dimensions=[], #Dimension(name='country')
+#   metrics=default_metrics,
+#   date_ranges=[dranges[8]],
+#   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
+#   keep_empty_rows=False,
+#   )
 
-response = client.run_report(request)
-ga_data.append(response)
+# response = client.run_report(request)
+# ga_data.append(response)
 
+# ----
 # request = RunReportRequest(
 #   property=f"properties/{property_id}",
 #   #dimensions=[Dimension(name="yearMonth")],
@@ -546,44 +546,46 @@ ga_data.append(response)
 # response = client.run_report(request)
 # # print(response)
 # ga_data.append(response)
+# ---
 
-request = RunReportRequest(
-  property=f"properties/{property_id}",
-  dimensions=[Dimension(name="yearMonth")],
-  #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
-  date_ranges=[dranges[9]],
-  #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
-  keep_empty_rows=False,
-  )
+# request = RunReportRequest(
+#   property=f"properties/{property_id}",
+#   dimensions=[Dimension(name="yearMonth")],
+#   #dimensions=[], #Dimension(name='country')
+#   metrics=default_metrics,
+#   date_ranges=[dranges[9]],
+#   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
+#   keep_empty_rows=False,
+#   )
 
-response = client.run_report(request)
-ga_data.append(response)
-request = RunReportRequest(
-  property=f"properties/{property_id}",
-  dimensions=[Dimension(name="yearMonth")],
-  #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
-  date_ranges=[dranges[10]],
-  #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
-  keep_empty_rows=False,
-  )
+# response = client.run_report(request)
+# ga_data.append(response)
+# request = RunReportRequest(
+#   property=f"properties/{property_id}",
+#   dimensions=[Dimension(name="yearMonth")],
+#   #dimensions=[], #Dimension(name='country')
+#   metrics=default_metrics,
+#   date_ranges=[dranges[10]],
+#   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
+#   keep_empty_rows=False,
+#   )
 
-response = client.run_report(request)
-ga_data.append(response)
+# response = client.run_report(request)
+# ga_data.append(response)
 
-request = RunReportRequest(
-  property=f"properties/{property_id}",
-  dimensions=[Dimension(name="yearMonth")],
-  #dimensions=[], #Dimension(name='country')
-  metrics=default_metrics,
-  date_ranges=[dranges[11]],
-  #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
-  keep_empty_rows=False,
-  )
+# request = RunReportRequest(
+#   property=f"properties/{property_id}",
+#   dimensions=[Dimension(name="yearMonth")],
+#   #dimensions=[], #Dimension(name='country')
+#   metrics=default_metrics,
+#   date_ranges=[dranges[11]],
+#   #order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name='yearMonth'), desc=False)],
+#   keep_empty_rows=False,
+#   )
 
-response = client.run_report(request)
-ga_data.append(response)
+# response = client.run_report(request)
+# ga_data.append(response)
+
 # st.write(ga_data)
 
 
@@ -757,8 +759,9 @@ df24_rev.reset_index(drop=True, inplace=True)
 # st.write(df24_rev)
 
 
-ct = pd.CategoricalIndex(months_list[month_start:13], ordered=True, name='Month')
+ct = pd.CategoricalIndex(months_list[month_start:2], ordered=True, name='Month')
 df_reversed.set_index(ct,drop=True, inplace=True)
+# 2024
 ct = pd.CategoricalIndex(months_list[0:13], ordered=True, name='Month')
 df24_rev.set_index(ct,drop=True, inplace=True)
 # del df_reversed['dateRange']
@@ -885,7 +888,7 @@ bottom = np.zeros(len(df_reversed))
 # Plot each layer of the bar, adding each bar to the "bottom" so
 # the next bar starts higher.
 for i, col in enumerate(df_reversed.columns[:-1]):
-  ax.bar(months_list[months_list.index(df_reversed.first_valid_index()):13], df_reversed[col].to_numpy(dtype='int'), bottom=bottom, label=col)
+  ax.bar(months_list[months_list.index(df_reversed.first_valid_index()):2], df_reversed[col].to_numpy(dtype='int'), bottom=bottom, label=col)
   bottom += df_reversed[col].to_numpy(dtype='int')
 
 # totals = df_reversed.sum(axis=1)
@@ -894,7 +897,7 @@ for i, col in enumerate(df_reversed.columns[:-1]):
 #   ax.text(totals.index[i], total + y_offset, round(total), ha='center',
 #           weight='bold')
 
-ax.set_title('Conversions 2023')
+ax.set_title('Conversions 2025')
 _ = ax.legend()
 
 st.pyplot(fig, use_container_width=True)
